@@ -1,0 +1,7 @@
+version: "3.7"
+services:
+  app:
+    build: .
+    image: app:0.1.0
+    environment:
+      FOO: bar 
