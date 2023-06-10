@@ -1,19 +1,23 @@
-# go-template
+# go-htmx-tailwind-example
 
-Quick starter template for new go projects
+Example CRUD app written in Go + HTMX + Tailwind CSS
 
-```sh
-go mod init app
-```
+This project implements a pure dynamic web app with SPA-like features but without heavy complex Javascript or Go frameworks to keep up with.  Just HTML/CSS + Go ❤️
+
+![screenshot](./screenshot.jpeg)
+
+
+## Develop
 
 ```
  Choose a make command to run
 
+  init          initialize project (make init module=github.com/user/project)
   vet           vet code
   test          run unit tests
   build         build a binary
-  autobuild     auto build when source files change
   dockerbuild   build project into a docker container image
   start         build and run local project
-  deploy        build code into a container and deploy it to the cloud dev environment
+  css           build tailwindcss
+  css-watch     watch build tailwindcss
 ```

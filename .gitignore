@@ -2,3 +2,4 @@ app
 *.swp
 *.test
 *.out
+tmp

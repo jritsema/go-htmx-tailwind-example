@@ -1,0 +1,53 @@
+<tr id="datarow-{{.ID}}" class="border-b dark:border-neutral-500">
+  <td class="whitespace-nowrap px-6 py-4">{{.ID}}</td>
+  <td class="whitespace-nowrap px-6 py-4">
+    <input
+      type="text"
+      class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+      data-include-edit="{{.ID}}"
+      name="company"
+      value="{{.Company}}"
+    />
+  </td>
+  <td class="whitespace-nowrap px-6 py-4">
+    <input
+      type="text"
+      class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+      data-include-edit="{{.ID}}"
+      name="contact"
+      value="{{.Contact}}"
+    />
+  </td>
+  <td class="whitespace-nowrap px-6 py-4">
+    <input
+      type="text"
+      class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+      data-include-edit="{{.ID}}"
+      name="country"
+      value="{{.Country}}"
+    />
+  </td>
+  <td class="whitespace-nowrap px-1 py-1">
+    <a
+      hx-put="/company/{{.ID}}"
+      hx-target="#datarow-{{.ID}}"
+      hx-swap="outerHTML"
+      hx-indicator="#processing"
+      hx-include="input[data-include-edit='{{.ID}}']"
+      class="inline-flex items-center h-8 px-4 m-2 text-sm text-blue-100 transition-colors duration-150 bg-blue-700 rounded-lg focus:shadow-outline hover:bg-blue-800"
+      href=""
+      >Save</a
+    >
+  </td>
+  <td class="whitespace-nowrap px-1 py-1">
+    <a
+      hx-get="/company/{{.ID}}"
+      hx-target="#datarow-{{.ID}}"
+      hx-swap="outerHTML"
+      hx-indicator="#processing"
+      class="inline-flex items-center h-8 px-4 m-2 text-sm text-red-100 transition-colors duration-150 bg-red-700 rounded-lg focus:shadow-outline hover:bg-red-800"
+      href=""
+      >Cancel</a
+    >
+  </td>
+</tr>

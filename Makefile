@@ -10,6 +10,13 @@ help: Makefile
 	@sed -n 's/^##//p' $< | column -t -s ':' |  sed -e 's/^/ /'
 	@echo
 
+## init: initialize project (make init module=github.com/user/project)
+.PHONY: init
+init:
+	go mod init ${module}
+	go install github.com/cosmtrek/air@latest
+	asdf reshim golang
+
 ## vet: vet code
 .PHONY: vet
 vet:
@@ -25,12 +32,6 @@ test:
 build: test
 	go build -o ./app -v
 
-## autobuild: auto build when source files change
-.PHONY: autobuild
-autobuild:
-	# curl -sf https://gobinaries.com/cespare/reflex | sh
-	reflex -g '*.go' -- sh -c 'echo "\n\n\n\n\n\n" && make build'
-
 ## dockerbuild: build project into a docker container image
 .PHONY: dockerbuild
 dockerbuild: test
@@ -39,12 +40,14 @@ dockerbuild: test
 ## start: build and run local project
 .PHONY: start
 start: build
-	clear
-	@echo ""
-	./app
+	air
 
-## deploy: build code into a container and deploy it to the cloud dev environment
-.PHONY: deploy
-deploy: build
-	./deploy.sh
+## css: build tailwindcss
+.PHONY: css
+css:
+	tailwindcss -i css/input.css -o css/output.css --minify
 
+## css-watch: watch build tailwindcss
+.PHONY: css-watch
+css-watch:
+	tailwindcss -i css/input.css -o css/output.css --watch
