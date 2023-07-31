@@ -1,4 +1,5 @@
 PACKAGES := $(shell go list ./...)
+name := $(shell basename ${PWD})
 
 all: help
 
@@ -32,10 +33,15 @@ test:
 build: test
 	go build -o ./app -v
 
-## dockerbuild: build project into a docker container image
-.PHONY: dockerbuild
-dockerbuild: test
-	docker-compose build
+## docker-build: build project into a docker container image
+.PHONY: docker-build
+docker-build: test
+	GOPROXY=direct docker buildx build -t ${name} .
+
+## docker-run: run project in a container
+.PHONY: docker-run
+docker-run:
+	docker run -it --rm -p 8080:8080 ${name}
 
 ## start: build and run local project
 .PHONY: start
