@@ -3,3 +3,4 @@ app
 *.test
 *.out
 tmp
+ecr-repo
