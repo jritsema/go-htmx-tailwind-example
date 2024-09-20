@@ -40,19 +40,24 @@ func main() {
 
 	//add routes
 	router := http.NewServeMux()
-	router.Handle("/css/output.css", http.FileServer(http.FS(css)))
+	router.Handle("GET /css/output.css", http.FileServer(http.FS(css)))
 
-	router.Handle("/company/add", web.Action(companyAdd))
-	router.Handle("/company/add/", web.Action(companyAdd))
+	//add
+	router.Handle("GET /company/add", web.Action(addCompany))
+	router.Handle("POST /company", web.Action(saveNewCompany))
+	router.Handle("GET /company", web.Action(cancelSaveNewCompany))
 
-	router.Handle("/company/edit", web.Action(companyEdit))
-	router.Handle("/company/edit/", web.Action(companyEdit))
+	//edit
+	router.Handle("GET /company/edit/{id}", web.Action(editCompany))
+	router.Handle("PUT /company/{id}", web.Action(saveExistingCompany))
+	router.Handle("GET /company/{id}", web.Action(cancelSaveExistingCompany))
 
-	router.Handle("/company", web.Action(companies))
-	router.Handle("/company/", web.Action(companies))
+	//delete
+	router.Handle("DELETE /company/{id}", web.Action(deleteCompany))
 
-	router.Handle("/", web.Action(index))
-	router.Handle("/index.html", web.Action(index))
+	//home
+	router.Handle("GET /", web.Action(index))
+	router.Handle("GET /index.html", web.Action(index))
 
 	//logging/tracing
 	nextRequestID := func() string {
