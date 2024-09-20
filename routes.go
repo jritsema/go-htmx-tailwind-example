@@ -6,76 +6,79 @@ import (
 	"github.com/jritsema/gotoolbox/web"
 )
 
-// Delete -> DELETE /company/{id} -> delete, companys.html
-
-// Edit   -> GET /company/edit/{id} -> row-edit.html
-// Save   ->   PUT /company/{id} -> update, row.html
-// Cancel ->	 GET /company/{id} -> nothing, row.html
-
-// Add    -> GET /company/add/ -> companys-add.html (target body with row-add.html and row.html)
-// Save   ->   POST /company -> add, companys.html (target body without row-add.html)
-// Cancel ->	 GET /company -> nothing, companys.html
+///////////////////////////////////////////////////////////
+//  UI Interactions
+///////////////////////////////////////////////////////////
+//
+// Add -> GET /company/add/ -> company-add.html
+// (target body with row-add.html and row.html)
+//
+//    Save -> POST /company -> add, companies.html
+//		(target body without row-add.html)
+//
+//		Cancel -> GET /company -> nothing, companies.html
+//
+// Edit -> GET /company/edit/{id} -> row-edit.html
+// 		Save -> PUT /company/{id} -> update, row.html
+//		Cancel -> GET /company/{id} -> nothing, row.html
+//
+// Delete -> DELETE /company/{id} -> delete, companies.html
+///////////////////////////////////////////////////////////
 
 func index(r *http.Request) *web.Response {
-	return web.HTML(http.StatusOK, html, "index.html", data, nil)
+	return web.HTML(http.StatusOK, html, "index.html", data.companies, nil)
 }
 
 // GET /company/add
-func companyAdd(r *http.Request) *web.Response {
-	return web.HTML(http.StatusOK, html, "company-add.html", data, nil)
+func addCompany(r *http.Request) *web.Response {
+	return web.HTML(http.StatusOK, html, "company-add.html", data.companies, nil)
 }
 
-// /GET company/edit/{id}
-func companyEdit(r *http.Request) *web.Response {
-	id, _ := web.PathLast(r)
-	row := getCompanyByID(id)
-	return web.HTML(http.StatusOK, html, "row-edit.html", row, nil)
+// POST /company
+func saveNewCompany(r *http.Request) *web.Response {
+	row := Company{}
+	r.ParseForm()
+	row.Company = r.Form.Get("company")
+	row.Contact = r.Form.Get("contact")
+	row.Country = r.Form.Get("country")
+	data.add(row)
+	return web.HTML(http.StatusOK, html, "companies.html", data.companies, nil)
 }
 
 // GET /company
-// GET /company/{id}
-// DELETE /company/{id}
+func cancelSaveNewCompany(r *http.Request) *web.Response {
+	return web.HTML(http.StatusOK, html, "companies.html", data.companies, nil)
+}
+
+// /GET company/edit/{id}
+func editCompany(r *http.Request) *web.Response {
+	id := r.PathValue("id")
+	row := data.getByID(id)
+	return web.HTML(http.StatusOK, html, "row-edit.html", row, nil)
+}
+
 // PUT /company/{id}
-// POST /company
-func companies(r *http.Request) *web.Response {
-	id, segments := web.PathLast(r)
-	switch r.Method {
+func saveExistingCompany(r *http.Request) *web.Response {
+	id := r.PathValue("id")
+	row := data.getByID(id)
+	r.ParseForm()
+	row.Company = r.Form.Get("company")
+	row.Contact = r.Form.Get("contact")
+	row.Country = r.Form.Get("country")
+	data.update(row)
+	return web.HTML(http.StatusOK, html, "row.html", row, nil)
+}
 
-	case http.MethodDelete:
-		deleteCompany(id)
-		return web.HTML(http.StatusOK, html, "companies.html", data, nil)
+// GET /company/{id}
+func cancelSaveExistingCompany(r *http.Request) *web.Response {
+	id := r.PathValue("id")
+	row := data.getByID(id)
+	return web.HTML(http.StatusOK, html, "row.html", row, nil)
+}
 
-	//cancel
-	case http.MethodGet:
-		if segments > 1 {
-			//cancel edit
-			row := getCompanyByID(id)
-			return web.HTML(http.StatusOK, html, "row.html", row, nil)
-		} else {
-			//cancel add
-			return web.HTML(http.StatusOK, html, "companies.html", data, nil)
-		}
-
-	//save edit
-	case http.MethodPut:
-		row := getCompanyByID(id)
-		r.ParseForm()
-		row.Company = r.Form.Get("company")
-		row.Contact = r.Form.Get("contact")
-		row.Country = r.Form.Get("country")
-		updateCompany(row)
-		return web.HTML(http.StatusOK, html, "row.html", row, nil)
-
-	//save add
-	case http.MethodPost:
-		row := Company{}
-		r.ParseForm()
-		row.Company = r.Form.Get("company")
-		row.Contact = r.Form.Get("contact")
-		row.Country = r.Form.Get("country")
-		addCompany(row)
-		return web.HTML(http.StatusOK, html, "companies.html", data, nil)
-	}
-
-	return web.Empty(http.StatusNotImplemented)
+// DELETE /company/{id}
+func deleteCompany(r *http.Request) *web.Response {
+	id := r.PathValue("id")
+	data.delete(id)
+	return web.HTML(http.StatusOK, html, "companies.html", data.companies, nil)
 }

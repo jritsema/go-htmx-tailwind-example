@@ -1,4 +1,4 @@
-FROM golang:1.20.4 AS build
+FROM golang:1.22.4 AS build
 WORKDIR /go/src/app
 COPY . .
 ENV CGO_ENABLED=0 GOOS=linux GOPROXY=direct
